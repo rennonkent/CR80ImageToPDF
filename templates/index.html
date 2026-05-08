@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Untitled Page</title>
+    <meta name="generator" content="WYSIWYG Web Builder 20 - https://www.wysiwygwebbuilder.com">
+    <!-- <link href="Front.css" rel="stylesheet"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <style>
+      @font-face {
+        font-family: 'Futura';
+        src: url('futura-medium-webfont.woff2') format('woff2'), url('futura-medium-webfont.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+      }
+    </style>
+    <link href="file:///C:/xampp/htdocs/imgToPDF/templates/index.css" rel="stylesheet">
+
+  </head>
+  <body>
+    <div id="wb_Image1" style="position:absolute;left:0px;top:0px;width:353px;height:560px;z-index:0;">
+      <img src="file:///C:/xampp/htdocs/imgToPDF/templates/images/front_page.jpg" id="Image1" alt="" width="353" height="561">
+    </div>
+    <div id="wb_last_name" style="position:absolute;left:0px;top:392px;width:353px;height:48px;text-align:center;z-index:1;">
+      <span style="color:#FAD000;font-family:'Montserrat';font-size:38px;font-weight: medium;">
+        <strong>{{LAST_NAME}}</strong>
+      </span>
+    </div>
+    <div id="wb_first_name" style="position:absolute;left:0px;top:429px;width:353px;height:52px;text-align:center;z-index:2;">
+      <span style="color:#fff;font-family:'Montserrat';font-size:28px;font-weight: medium;">
+        <strong>{{FIRST_NAME}}</strong> 
+      </span>
+    </div>
+    <div id="wb_position" style="position:absolute;left:0px;top:492px;width:353px;height:23px;text-align:center;z-index:3;">
+      <span style="color:#fff;font-family:'Futura', sans-serif;font-size:19px;">
+        {{POSITION}}
+      </span>
+    </div>
+    <div id="wb_id_number" style="position:absolute;left:0px;top:516px;width:353px;height:21px;text-align:center;z-index:4;">
+      <span style="color:#fff;font-family:'Futura', sans-serif;font-size:19px;">
+        {{ID_NUMBER}}
+      </span>
+    </div>
+    <div id="wb_profile_pic" style="position:absolute;left:98px;top:97px;width:252px;height:289px;z-index:1;">
+      <img src="{{PROFILE_PIC_URL}}" id="profile_pic" alt="" width="252" height="269">
+    </div>
+    <div id="wb_qr_code" style="position:absolute;left:15px;top:256px;width:124px;height:124px;z-index:7;">
+      <img src="{{PROFILE_QR}}" id="qr_code" alt="" width="111" height="109">
+    </div>
+  </body>
+</html>
