@@ -2,6 +2,7 @@
   session_start();
 
   require_once('generate.php');
+  require_once('generate_bcode.php');
 
   $wkhtmltoimage = "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe";
 
@@ -41,26 +42,35 @@
     return [$returnCode, $output];
   }
 
-  // Generate Front ID
-  $outputImage = $outputDir . "\\" . $id_number . "-front.jpg";
-  list($returnCode, $output) = generateImage($wkhtmltoimage, __DIR__ . "\\templates\\index.html", $outputImage, [
-    '{{FIRST_NAME}}' => strtoupper($firstname),
-    '{{LAST_NAME}}'  => strtoupper($lastname),
-    '{{POSITION}}'    => $position,
-    '{{ID_NUMBER}}'  => 'SC - '. $id_number,
-    '{{PROFILE_PIC_URL}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/$id_number.png",
-    '{{PROFILE_QR}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/{$id_number}_qr.png"
-  ]);
+  $bcode = new BarcodeGenerator($id_number);
+  $bcodeStatus = $bcode->generateBarcode();
 
-  // Generate Back ID
-  $outputBackImage = $outputDir . "\\" . $id_number . "-back.jpg";
-  list($returnCodeBack, $outputBack) = generateImage($wkhtmltoimage, __DIR__ . "\\templates\\index_back.html", $outputBackImage, [
-    '{{NOTIFY_NAME}}' => $notify_name,
-    '{{NOTIFY_CONTACT}}' => $notify_contact,
-    '{{ISSUED_DATE}}' => date('F d, Y'),
-    '{{BARCODE}}' => "file:///" . str_replace("\\", "/", __DIR__) . "profile/$id_number/{$id_number}_bcode.jpg",
-    '{{SIGNATURE}}' => "file:///" . str_replace("\\", "/", __DIR__) . "profile/$id_number/{$id_number}_signature.png",
-  ]);
+  if ($bcodeStatus === 0) {
+    $_SESSION['response'] = 'Failed to generate barcode';
+    header('Location: index.php');
+    exit;
+  } else {
+    // Generate Front ID
+    $outputImage = $outputDir . "\\" . $id_number . "-front.jpg";
+    list($returnCode, $output) = generateImage($wkhtmltoimage, __DIR__ . "\\templates\\index.html", $outputImage, [
+      '{{FIRST_NAME}}' => strtoupper($firstname),
+      '{{LAST_NAME}}'  => strtoupper($lastname),
+      '{{POSITION}}'    => $position,
+      '{{ID_NUMBER}}'  => 'SC - '. $id_number,
+      '{{PROFILE_PIC_URL}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/$id_number.png",
+      '{{PROFILE_QR}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/{$id_number}_qr.png"
+    ]);
+
+    // Generate Back ID
+    $outputBackImage = $outputDir . "\\" . $id_number . "-back.jpg";
+    list($returnCodeBack, $outputBack) = generateImage($wkhtmltoimage, __DIR__ . "\\templates\\index_back.html", $outputBackImage, [
+      '{{NOTIFY_NAME}}' => $notify_name,
+      '{{NOTIFY_CONTACT}}' => $notify_contact,
+      '{{ISSUED_DATE}}' => date('F d, Y'),
+      '{{BARCODE}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/{$id_number}_bcode.png",
+      '{{SIGNATURE}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/{$id_number}_signature.png",
+    ]);
+  }
 
   // Output results
   if ($returnCode === 0 && $returnCodeBack === 0) {
@@ -68,7 +78,7 @@
     $imageToPDF = new ImageToPDF($id_number);
     $imageToPDF->generatePDF();
 
-    // echo "ID images created: $outputImage";
+    //echo "ID images created: $outputImage";
   } else {
     echo "Error generating image(s):<br>";
     // echo nl2br(htmlspecialchars(implode("\n", array_merge($output, $outputBack))));
