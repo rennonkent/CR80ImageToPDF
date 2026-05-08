@@ -3,6 +3,7 @@
 
   require_once('generate.php');
   require_once('generate_bcode.php');
+  require_once('generate_qrcode.php');
 
   $wkhtmltoimage = "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe";
 
@@ -13,10 +14,7 @@
   $id_number = $_POST['id_number'] ?? '00-0000-000';
   $notify_name = $_POST['notify_name'] ?? 'none';
   $notify_contact = $_POST['notify_contact'] ?? 'none';
-
-  // if ($id_number === '00-0000-000') {
-  //   throw new Exception('ID Number is not allowed.'); 
-  // }
+  $tracking_number = bin2hex(random_bytes(6));
 
   if ($id_number == '00-0000-000' || $id_number == '') {
     $_SESSION['response'] = 'ID Number is required';
@@ -41,11 +39,15 @@
     unlink($tempHtml);
     return [$returnCode, $output];
   }
-
+  /** Generate Barcode */
   $bcode = new BarcodeGenerator($id_number);
   $bcodeStatus = $bcode->generateBarcode();
 
-  if ($bcodeStatus === 0) {
+  /** Generate QR Code */
+  $generateQRCode = new generateQRCode($id_number);
+  $qrCodeStatus = $generateQRCode->generateQRCode($tracking_number);
+
+  if ($bcodeStatus === 0 && $qrCodeStatus === false) {
     $_SESSION['response'] = 'Failed to generate barcode';
     header('Location: index.php');
     exit;
@@ -78,15 +80,15 @@
     $imageToPDF = new ImageToPDF($id_number);
     $imageToPDF->generatePDF();
 
-    //echo "ID images created: $outputImage";
+    $_SESSION['response'] = "<br> Tracking Number: ". $tracking_number;;
+    header('Location: index.php');
+    exit;
+    
   } else {
     echo "Error generating image(s):<br>";
-    // echo nl2br(htmlspecialchars(implode("\n", array_merge($output, $outputBack))));
+
     echo nl2br(htmlspecialchars(implode("\n", array_merge($output, $outputBack))));
   }
-
-
-
 
 ?>
 

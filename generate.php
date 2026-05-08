@@ -58,9 +58,9 @@ class ImageToPDF
 
       $pdf->Output(__DIR__ . '/pdf/' . $this->idNumber . '-cr80-card.pdf', 'F');
 
-      $_SESSION['response'] = "Success:PDF generated successfully.";
-      header('Location: index.php');
-      exit;
+      // $_SESSION['response'] = "Success:PDF generated successfully.";
+      // header('Location: index.php');
+      // exit;
 
     } catch (Exception $e) {
       $_SESSION['response'] = "Error: " . $e->getMessage();
