@@ -19,17 +19,17 @@ class ImageToPDF
 
   private function setImageToPage($pdf, $pageLocation)
   {
-    if(!file_exists($this->imagePath . $this->idNumber . '-' . $pageLocation . '.png')) {
-      throw new Exception("generated_id path or folder does not exist!"); 
+    if(!file_exists($this->imagePath . $this->idNumber . '/'. $this->idNumber . '-' . $pageLocation . '.JPG')) {
+      throw new Exception("generated_id path or folder does not exists!"); 
     }
-
+    
     $pdf->Image(
-        $this->imagePath. $this->idNumber . '-' . $pageLocation . '.png',
+        $this->imagePath . $this->idNumber .'/'. $this->idNumber .'-'. $pageLocation . '.JPG',
         0,
         0,
         $this->cardWidth,
         $this->cardHeight,
-        'PNG'
+        'JPG'
     );
   }
 
@@ -40,10 +40,6 @@ class ImageToPDF
 
       if (!file_exists(__DIR__ . '/pdf')) {
         mkdir(__DIR__ . '/pdf');
-      }
-
-      if(!file_exists($this->imagePath)) {
-        throw new Exception("generated_id path or folder does not exist!"); 
       }
 
       $pdf = new TCPDF('P', 'mm', [$this->cardHeight, $this->cardWidth], true, 'UTF-8', false);
@@ -75,13 +71,13 @@ class ImageToPDF
   }
 }
 
-$idNumber = $_POST['idNumber'];
+// $idNumber = $_POST['idNumber'];
 
-if ($idNumber == '') {
-  $_SESSION['response'] = 'ID Number is required';
-  header('Location: index.php');
-  exit;
-}
+// if ($idNumber == '') {
+//   $_SESSION['response'] = 'ID Number is required';
+//   header('Location: index.php');
+//   exit;
+// }
 
-$imageToPDF = new ImageToPDF($idNumber);
-$imageToPDF->generatePDF();
+// $imageToPDF = new ImageToPDF($idNumber);
+// $imageToPDF->generatePDF();
