@@ -1,2 +1,4 @@
-/generated_id
-/pdf
+/generated_id/*
+/pdf/*
+/templates/images/*
+/profile/*
