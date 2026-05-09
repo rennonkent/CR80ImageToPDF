@@ -25,7 +25,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h1 class="text-center">ID PDF Generator</h1>
+        <h1 class="text-center border-bottom border-danger">ID PDF Generator</h1>
         <?php
           if (isset($_SESSION['response'])) {
             echo '<div class="alert alert-dark alert-dismissible fade show p-2" role="alert">
@@ -37,7 +37,7 @@
           }
         ?>
       </div>
-      <form action="convert_img.php" method="POST">
+      <form action="app/classes/convert_img.php" method="POST">
         <div class="col-lg-5">
           <div class="mb-2">
             <label for="id_number" class="form-label fs-small">ID Number:</label>
@@ -45,7 +45,7 @@
           </div>
         </div>
 
-        <div class="col-lg-5">
+        <!-- <div class="col-lg-5">
           <div class="mb-2">
             <label for="fname" class="form-label fs-small">First Name:</label>
             <input type="text" class="form-control form-control-sm fs-small shadow-none" id="fname" name="fname">
@@ -57,7 +57,7 @@
             <label for="lname" class="form-label fs-small">Last Name:</label>
             <input type="text" class="form-control form-control-sm fs-small shadow-none" id="lname" name="lname">
           </div>
-        </div>
+        </div> -->
 
         <div class="col-lg-5">
           <div class="mb-2">

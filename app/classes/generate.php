@@ -1,18 +1,19 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
+require '../../vendor/autoload.php';
 
 class ImageToPDF
 {
   protected $cardWidth = 53.98;
   protected $cardHeight = 85.60;
-  protected $imagePath = __DIR__ . '/generated_id/';
+  public $imagePath;
 
   public $idNumber;
 
   public function __construct($idNumber)
   {
     $this->idNumber = $idNumber;
+    $this->imagePath = dirname(__DIR__, 2) . '/generated_id/';
   }
 
   private function setImageToPage($pdf, $pageLocation)
@@ -36,8 +37,8 @@ class ImageToPDF
     $response_msg = '';
     try {
 
-      if (!file_exists(__DIR__ . '/pdf')) {
-        mkdir(__DIR__ . '/pdf');
+      if (!file_exists(dirname(__DIR__, 2) . '/pdf')) {
+        mkdir(dirname(__DIR__, 2) . '/pdf');
       }
 
       $pdf = new TCPDF('P', 'mm', [$this->cardHeight, $this->cardWidth], true, 'UTF-8', false);
@@ -54,7 +55,7 @@ class ImageToPDF
       $pdf->AddPage();
       $this->setImageToPage($pdf, 'back');
 
-      $pdf->Output(__DIR__ . '/pdf/' . $this->idNumber . '-cr80-card.pdf', 'F');
+      $pdf->Output(dirname(__DIR__, 2) . '/pdf/' . $this->idNumber . '-cr80-card.pdf', 'F');
 
       // $_SESSION['response'] = "Success:PDF generated successfully.";
       // header('Location: index.php');

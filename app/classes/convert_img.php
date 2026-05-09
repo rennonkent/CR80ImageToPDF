@@ -4,12 +4,13 @@
   require_once('generate.php');
   require_once('generate_bcode.php');
   require_once('generate_qrcode.php');
+  require_once('FetchEmployeeData.php');
 
   $wkhtmltoimage = "C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltoimage.exe";
 
   // Input data
-  $firstname = $_POST['fname'] ?? 'NoFirstname'; 
-  $lastname = $_POST['lname'] ?? 'NoLastname';
+  // $firstname = $_POST['fname'] ?? 'NoFirstname'; 
+  // $lastname = $_POST['lname'] ?? 'NoLastname';
   $position = $_POST['position'] ?? 'NoPosition';
   $id_number = $_POST['id_number'] ?? '00-0000-000';
   $notify_name = $_POST['notify_name'] ?? 'none';
@@ -22,8 +23,17 @@
     exit;
   }
 
+  /** Fetch Employee Data */
+  $empData = new FetchEmployeeData($id_number);
+  $empDataInfo = $empData->fetchEmployeeInfo();
+
+  $firstname = $empDataInfo['fname'];
+  $minitial = $empDataInfo['minitial'];
+  $lastname = $empDataInfo['lname'];
+
   // Prepare output directory
-  $outputDir = __DIR__ . "\\generated_id\\" . $id_number;
+  //$outputDir = __DIR__ . "\\generated_id\\" . $id_number;
+  $outputDir = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'generated_id' . DIRECTORY_SEPARATOR . $id_number;
   if (!is_dir($outputDir)) mkdir($outputDir, 0777, true);
 
   // Helper function to generate image
@@ -32,7 +42,8 @@
     foreach ($replacements as $key => $value) {
       $html = str_replace($key, htmlspecialchars($value), $html);
     }
-    $tempHtml = __DIR__ . "\\temp_" . uniqid() . ".html";
+    //$tempHtml = __DIR__ . "\\temp_" . uniqid() . ".html";
+    $tempHtml = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'temp_' . uniqid() . '.html';
     file_put_contents($tempHtml, $html);
     $cmd = "\"$wkhtmltoimage\" --enable-local-file-access --width 353 --height 560 --disable-smart-width --format jpg --quality 100 \"$tempHtml\" \"$outputFile\" 2>&1";
     exec($cmd, $output, $returnCode);
@@ -54,23 +65,23 @@
   } else {
     // Generate Front ID
     $outputImage = $outputDir . "\\" . $id_number . "-front.jpg";
-    list($returnCode, $output) = generateImage($wkhtmltoimage, __DIR__ . "\\templates\\index.html", $outputImage, [
-      '{{FIRST_NAME}}' => strtoupper($firstname),
+    list($returnCode, $output) = generateImage($wkhtmltoimage, dirname(__DIR__, 2) . "\\templates\\index.html", $outputImage, [
+      '{{FIRST_NAME}}' => strtoupper($firstname) .' '. strtoupper($minitial),
       '{{LAST_NAME}}'  => strtoupper($lastname),
       '{{POSITION}}'    => $position,
       '{{ID_NUMBER}}'  => 'SC - '. $id_number,
-      '{{PROFILE_PIC_URL}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/$id_number.png",
-      '{{PROFILE_QR}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/{$id_number}_qr.png"
+      '{{PROFILE_PIC_URL}}' => "file:///" . str_replace("\\", "/", dirname(__DIR__, 2)) . "/profile/$id_number/$id_number.png",
+      '{{PROFILE_QR}}' => "file:///" . str_replace("\\", "/", dirname(__DIR__, 2)) . "/profile/$id_number/{$id_number}_qr.png"
     ]);
 
     // Generate Back ID
     $outputBackImage = $outputDir . "\\" . $id_number . "-back.jpg";
-    list($returnCodeBack, $outputBack) = generateImage($wkhtmltoimage, __DIR__ . "\\templates\\index_back.html", $outputBackImage, [
+    list($returnCodeBack, $outputBack) = generateImage($wkhtmltoimage, dirname(__DIR__, 2) . "\\templates\\index_back.html", $outputBackImage, [
       '{{NOTIFY_NAME}}' => $notify_name,
       '{{NOTIFY_CONTACT}}' => $notify_contact,
       '{{ISSUED_DATE}}' => date('F d, Y'),
-      '{{BARCODE}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/{$id_number}_bcode.png",
-      '{{SIGNATURE}}' => "file:///" . str_replace("\\", "/", __DIR__) . "/profile/$id_number/{$id_number}_signature.png",
+      '{{BARCODE}}' => "file:///" . str_replace("\\", "/", dirname(__DIR__, 2)) . "/profile/$id_number/{$id_number}_bcode.png",
+      '{{SIGNATURE}}' => "file:///" . str_replace("\\", "/", dirname(__DIR__, 2)) . "/profile/$id_number/{$id_number}_signature.png",
     ]);
   }
 
@@ -81,7 +92,7 @@
     $imageToPDF->generatePDF();
 
     $_SESSION['response'] = "<br> Tracking Number: ". $tracking_number;;
-    header('Location: index.php');
+    header('Location: ../../index.php');
     exit;
     
   } else {
