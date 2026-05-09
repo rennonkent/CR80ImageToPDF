@@ -19,7 +19,7 @@ class ImageToPDF
   private function setImageToPage($pdf, $pageLocation)
   {
     if(!file_exists($this->imagePath . $this->idNumber . '/'. $this->idNumber . '-' . $pageLocation . '.JPG')) {
-      throw new Exception("generated_id path or folder does not exists!"); 
+      throw new Exception("PDF: generated_id path or folder does not exists!"); 
     }
     
     $pdf->Image(
@@ -55,7 +55,8 @@ class ImageToPDF
       $pdf->AddPage();
       $this->setImageToPage($pdf, 'back');
 
-      $pdf->Output(dirname(__DIR__, 2) . '/pdf/' . $this->idNumber . '-cr80-card.pdf', 'F');
+      //$pdf->Output(dirname(__DIR__, 2) . '/pdf/' . $this->idNumber . '-cr80-card.pdf', 'F');
+      $pdf->Output($this->idNumber .'cr80-card.pdf', 'D');
 
       // $_SESSION['response'] = "Success:PDF generated successfully.";
       // header('Location: index.php');
@@ -63,20 +64,20 @@ class ImageToPDF
 
     } catch (Exception $e) {
       $_SESSION['response'] = "Error: " . $e->getMessage();
-      header('Location: index.php');
+      header('Location: ../../index.php');
       exit;
     } 
     
   }
 }
 
-// $idNumber = $_POST['idNumber'];
+$id_number = $_GET['id_number'];
 
-// if ($idNumber == '') {
-//   $_SESSION['response'] = 'ID Number is required';
-//   header('Location: index.php');
-//   exit;
-// }
+if ($id_number == '00-0000-000') {
+  $_SESSION['response'] = 'ID Number is required';
+  header('Location: ../../index.php');
+  exit;
+}
 
-// $imageToPDF = new ImageToPDF($idNumber);
-// $imageToPDF->generatePDF();
+$imageToPDF = new ImageToPDF($id_number);
+$imageToPDF->generatePDF();

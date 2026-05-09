@@ -32,7 +32,7 @@
                     <span>' . $_SESSION['response'] . '</span>
                     <button type="button" class="btn-close btn-sm p-3 fs-small" data-bs-dismiss="alert" aria-label="Close"></button>
                   </div>';
-
+            
             unset($_SESSION['response']);
           }
         ?>
@@ -80,12 +80,31 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-sm btn-dark fs-smaller">Generate</button>
+        <button type="submit" id="generateImage" class="btn btn-sm btn-dark fs-smaller">Generate</button>
       </form>
+
     </div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
+  <?php if (!empty($_SESSION['auto_generate_pdf'])): ?>
+
+    <script>
+      let idNumber = '<?php echo $_SESSION['id_number']; ?>';
+      document.addEventListener('DOMContentLoaded', function () {
+        window.open(
+          'app/classes/generate.php?id_number=' + encodeURIComponent(idNumber),
+          '_blank'
+        );
+      });
+    </script>
+
+    <?php
+    unset($_SESSION['auto_generate_pdf']);
+    unset($_SESSION['id_number']);
+    endif;
+  ?>
 </body>
 </html>

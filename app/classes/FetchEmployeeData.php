@@ -31,7 +31,7 @@ class FetchEmployeeData
 
 		if ($httpCode !== 200) {
 			$_SESSION['response'] = 'API returned HTTP Code: ' . $httpCode;
-			header('Location: index.php');
+			header('Location: ../../index.php');
 			exit;
 		}
 

@@ -20,7 +20,7 @@ class BarcodeGenerator
       $outputDir = __DIR__ . '/profile/' . $this->id_number;
       
       if (!file_exists($outputDir)) {
-        throw new Exception("generated_id path or folder does not exists!"); 
+        throw new Exception("Barcode: generated_id path or folder does not exists!"); 
       }
 
       $generator = new BarcodeGeneratorPNG();

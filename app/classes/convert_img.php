@@ -1,7 +1,7 @@
 <?php
   session_start();
 
-  require_once('generate.php');
+  //require_once('generate.php');
   require_once('generate_bcode.php');
   require_once('generate_qrcode.php');
   require_once('FetchEmployeeData.php');
@@ -15,11 +15,11 @@
   $id_number = $_POST['id_number'] ?? '00-0000-000';
   $notify_name = $_POST['notify_name'] ?? 'none';
   $notify_contact = $_POST['notify_contact'] ?? 'none';
-  $tracking_number = bin2hex(random_bytes(6));
+  $tracking_number = '';
 
-  if ($id_number == '00-0000-000' || $id_number == '') {
-    $_SESSION['response'] = 'ID Number is required';
-    header('Location: index.php');
+  if ($id_number == '00-0000-000') {
+    $_SESSION['response'] = 'ID Number is requireds';
+    header('Location: ../../index.php');
     exit;
   }
 
@@ -30,6 +30,11 @@
   $firstname = $empDataInfo['fname'];
   $minitial = $empDataInfo['minitial'];
   $lastname = $empDataInfo['lname'];
+  $tracking_number = $empDataInfo['validation'];
+  
+  if($empDataInfo['validation' !== null]) {
+    $tracking_number = $empDataInfo['validation'];
+  }
 
   // Prepare output directory
   //$outputDir = __DIR__ . "\\generated_id\\" . $id_number;
@@ -88,10 +93,12 @@
   // Output results
   if ($returnCode === 0 && $returnCodeBack === 0) {
   //if ($returnCode === 0) {
-    $imageToPDF = new ImageToPDF($id_number);
-    $imageToPDF->generatePDF();
+    //$imageToPDF = new ImageToPDF($id_number);
+    //$imageToPDF->generatePDF();
 
-    $_SESSION['response'] = "<br> Tracking Number: ". $tracking_number;;
+    $_SESSION['response'] = "<br> Tracking Number: ". $tracking_number;
+    $_SESSION['id_number'] = $id_number;
+    $_SESSION['auto_generate_pdf'] = true;
     header('Location: ../../index.php');
     exit;
     
